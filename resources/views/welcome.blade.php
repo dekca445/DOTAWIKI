@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="container py-5">
+    {{-- <div class="container py-5">
         <div class="d-flex justify-content-between align-items-end mb-4">
             <h4 class="frozen-text mb-0" data-text="CURRENT META">CURRENT META</h4>
             <a href="/meta" class="text-ice small text-decoration-none fw-bold">VIEW FULL META &rarr;</a>
@@ -80,7 +80,7 @@
                 </div>
             @endforeach
         </div>
-    </div>
+    </div> --}}
 
     <div class="container-fluid py-5" style="background: #050b14; border-top: 1px solid var(--ice-border);">
         <div class="container">
