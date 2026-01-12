@@ -1,98 +1,144 @@
-<x-app-layout>
-    <div class="main-layout py-10">
-        <aside class="space-y-6">
-            <div class="glass-panel text-center">
-                <div class="relative inline-block mb-4">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ Auth::user()->name }}" 
-                         class="avatar w-24 h-24 border-4 border-ice-blue shadow-lg mx-auto">
-                </div>
-                <h2 class="frozen-text text-xl uppercase" data-text="{{ Auth::user()->name }}">{{ Auth::user()->name }}</h2>
+<x-layout>
+    <x-slot:title>Dashboard - {{ Auth::user()->name }}</x-slot>
+
+    <div class="container py-5 mt-5 fade-in-anim">
+        <div class="row mb-4 align-items-center">
+            <div class="col">
+                <h2 class="frozen-text text-uppercase mb-0" data-text="COMMAND CENTER">COMMAND CENTER</h2>
+                <p class="text-secondary small">Welcome back, {{ Auth::user()->name }}</p>
+            </div>
+            <div class="col-auto">
+                <a href="{{ route('profile.edit') }}" class="btn btn-outline-info btn-sm">
+                    ⚙️ SETTINGS
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <x-ice-card>
+                    <div class="text-center">
+                        <div class="position-relative d-inline-block mb-3">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ Auth::user()->name }}" 
+                                 class="rounded-circle border border-info shadow-lg p-1 bg-black" 
+                                 width="100" height="100" alt="Avatar">
+                        </div>
+                        
+                        <h4 class="text-white font-cinzel mb-1">{{ Auth::user()->name }}</h4>
+                        <p class="text-secondary x-small mb-3">{{ Auth::user()->email }}</p>
+
+                        <div class="d-flex justify-content-around border-top border-bottom border-secondary border-opacity-25 py-2 mb-3">
+                            <div class="text-center">
+                                <div class="h5 text-white fw-bold mb-0">{{ Auth::user()->followers()->count() ?? 0 }}</div>
+                                <small class="text-muted x-small text-uppercase">Followers</small>
+                            </div>
+                            <div class="text-center border-start border-secondary border-opacity-25"></div>
+                            <div class="text-center">
+                                <div class="h5 text-white fw-bold mb-0">{{ Auth::user()->following()->count() ?? 0 }}</div>
+                                <small class="text-muted x-small text-uppercase">Following</small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-dark border-secondary text-secondary">
+                                Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                </x-ice-card>
                 
-                <div class="follow-stats mt-6 border-t border-b border-white/10 py-4">
-                    <div class="stat-box text-center">
-                        <h3 class="text-ice font-bold text-xl">{{ Auth::user()->followers()->count() ?? 0 }}</h3>
-                        <span class="text-[10px] text-muted uppercase">Followers</span>
-                    </div>
-                    <div class="stat-box text-center border-l border-white/10">
-                        <h3 class="text-ice font-bold text-xl">{{ Auth::user()->following()->count() ?? 0 }}</h3>
-                        <span class="text-[10px] text-muted uppercase">Following</span>
-                    </div>
-                </div>
-
-                <div class="mt-6 space-y-2">
-                    <a href="{{ route('profile.edit') }}" class="btn-ice w-full block text-center no-underline text-xs">
-                        <i class="fas fa-user-cog mr-2"></i> Pengaturan Akun
-                    </a>
-                </div>
-            </div>
-        </aside>
-
-        <main>
-            <div class="nav-tabs mb-6">
-                <div class="nav-item active font-cinzel">Arsip Strategi Anda</div>
-                <div class="nav-item font-cinzel">Rekomendasi Build</div>
+                {{-- <div class="mt-4">
+                    <x-ice-card>
+                        <h6 class="text-ice font-cinzel mb-3 small border-bottom border-secondary pb-2">QUICK ACCESS</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="{{ route('community.index') }}" class="text-decoration-none text-light hover-ice">Example: My Community Posts</a></li>
+                            <li class="mb-2"><a href="#" class="text-decoration-none text-light hover-ice">Example: Saved Guides</a></li>
+                        </ul>
+                    </x-ice-card>
+                </div> --}}
             </div>
 
-            @forelse($myPosts as $post)
-                <div class="post-card mb-6 glass-panel p-6 border-l-4 border-ice-blue">
-                    <div class="post-header flex items-center gap-3 mb-4">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ Auth::user()->name }}" class="w-10 h-10 rounded-full border border-ice-blue">
-                        <div>
-                            <span class="text-ice font-bold uppercase block text-sm">{{ Auth::user()->name }}</span>
-                            <small class="text-muted text-[10px] italic">{{ $post->created_at->diffForHumans() }}</small>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <x-ice-card>
+                        <div class="d-flex gap-3 align-items-center">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ Auth::user()->name }}" 
+                                 class="rounded-circle" width="40">
+                            <a href="{{ route('community.index') }}" class="form-control bg-black border-secondary text-secondary rounded-pill" style="text-decoration: none; padding-top: 10px;">
+                                Share your strategy, {{ Auth::user()->name }}?
+                            </a>
                         </div>
+                    </x-ice-card>
+                </div>
+
+                <h5 class="text-secondary font-cinzel mb-3 small">YOUR RECENT ACTIVITY</h5>
+
+                @forelse($myPosts as $post)
+                    <div class="mb-3">
+                        <x-ice-card :interactive="true">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="badge bg-secondary bg-opacity-25 border border-secondary text-info">
+                                        {{ ucwords(str_replace('_', ' ', $post->category)) }}
+                                    </span>
+                                    <small class="text-muted">{{ $post->created_at->diffForHumans() }}</small>
+                                </div>
+                                
+                                <button class="btn btn-link text-secondary p-0 btn-sm">•••</button>
+                            </div>
+
+                            <p class="text-white mb-3" style="font-size: 0.95rem;">
+                                {{ Str::limit($post->content, 150) }}
+                            </p>
+
+                            @if($post->image)
+                                <div class="mb-3 rounded overflow-hidden border border-secondary">
+                                    <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid w-100 object-fit-cover" style="max-height: 200px;">
+                                </div>
+                            @endif
+
+                            <div class="d-flex gap-4 border-top border-secondary border-opacity-25 pt-2 mt-2">
+                                <div class="text-secondary small">
+                                    <span class="text-info">▲</span> {{ $post->likes()->count() }} Likes
+                                </div>
+                                <div class="text-secondary small">
+                                    <span>💬</span> {{ $post->comments()->count() }} Comments
+                                </div>
+                            </div>
+                        </x-ice-card>
                     </div>
+                @empty
+                    <div class="text-center py-5 border border-secondary border-dashed rounded bg-black bg-opacity-25">
+                        <h1 class="text-secondary opacity-25 display-4">📝</h1>
+                        <p class="text-secondary">You haven't posted anything yet.</p>
+                        <a href="{{ route('community.index') }}" class="btn btn-outline-info btn-sm mt-2">Create First Post</a>
+                    </div>
+                @endforelse
+            </div>
+
+            <div class="col-lg-3">
+                <x-ice-card>
+                    <h6 class="text-warning font-cinzel mb-3 small border-bottom border-secondary pb-2">BATTLE STATS</h6>
                     
-                    <div class="text-main leading-relaxed mb-4 text-justify">
-                        {{ $post->content }}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-secondary small">Total Posts</span>
+                        <span class="text-white fw-bold">{{ $myPosts->count() }}</span>
                     </div>
-
-                    @if($post->image)
-                        <div class="mb-4 rounded-lg overflow-hidden border border-white/10 shadow-lg">
-                            <img src="{{ asset('storage/' . $post->image) }}" class="w-full h-auto object-cover">
-                        </div>
-                    @endif
-
-                    @if($post->video)
-                        <div class="mb-4 rounded-lg overflow-hidden border border-white/10 shadow-lg">
-                            <video controls class="w-full">
-                                <source src="{{ asset('storage/' . $post->video) }}" type="video/mp4">
-                            </video>
-                        </div>
-                    @endif
-
-                    <div class="post-actions pt-4 border-t border-white/5 flex gap-6">
-                        <button class="text-ice hover:glow text-xs uppercase font-bold">
-                            <i class="fas fa-heart mr-1"></i> {{ $post->likes()->count() }} Like
-                        </button>
-                        <button class="text-muted text-xs uppercase font-bold">
-                            <i class="fas fa-comment mr-1"></i> {{ $post->comments()->count() }} Comment
-                        </button>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-secondary small">Total Likes</span>
+                        <span class="text-white fw-bold">0</span> </div>
+                    
+                    <div class="mt-4 pt-3 border-top border-secondary border-opacity-25 text-center">
+                        <small class="text-muted d-block mb-1">Account Status</small>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success">ACTIVE AGENT</span>
                     </div>
-                </div>
-            @empty
-                <div class="glass-panel text-center py-20 border-dashed border-white/20 border-2">
-                    <i class="fas fa-feather-alt text-4xl text-white/10 mb-4"></i>
-                    <p class="text-muted italic">Anda belum pernah memposting apapun.</p>
-                    <a href="{{ route('community.index') }}" class="btn-ice inline-block mt-4 no-underline">Mulai Posting</a>
-                </div>
-            @endforelse
-        </main>
-
-        <aside>
-            <div class="glass-panel">
-                <h4 class="font-cinzel text-ice border-b border-white/10 pb-2 mb-4 uppercase text-xs tracking-widest">Statistik Tempur</h4>
-                <div class="space-y-4 text-sm">
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted uppercase text-[10px]">Total Postingan:</span>
-                        <span class="text-ice font-bold">{{ $myPosts->count() }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-muted uppercase text-[10px]">Total Vote Terima:</span>
-                        <span class="text-white font-bold">0</span>
-                    </div>
-                </div>
+                </x-ice-card>
             </div>
-        </aside>
+        </div>
     </div>
-</x-app-layout>
+
+    <style>
+        .hover-ice:hover { color: #00d9ff !important; text-shadow: 0 0 5px #00d9ff; }
+        .text-decoration-none { text-decoration: none; }
+    </style>
+</x-layout>
