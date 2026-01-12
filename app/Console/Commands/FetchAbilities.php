@@ -27,7 +27,7 @@ class FetchAbilities extends Command
                                 ->json();
 
         if (!$allAbilities || !$heroAbilitiesMap) {
-            $this->error('❌ Gagal mendownload data dari OpenDota. Cek koneksi internet.');
+            $this->error('Gagal mendownload data dari OpenDota. Cek koneksi internet.');
             return;
         }
 

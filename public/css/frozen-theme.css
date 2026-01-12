@@ -296,7 +296,7 @@ h1, h2, h3, h4, h5, .font-cinzel {
    ========================================= */
 
 /* Snow Animation */
-#snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+#snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999999999; overflow: hidden; }
 .snowflake {
     position: absolute; top: -10px; border-radius: 50%; background: white; opacity: 0.8;
     box-shadow: 0 0 10px white; animation: fall linear infinite;
@@ -501,3 +501,28 @@ body {
 }
 .stat-box h3 { margin: 0; color: var(--accent); }
 .stat-box span { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* --- EMERGENCY FIX: FORM INPUTS & PROFILE --- */
+input, textarea, select, .form-control {
+    background-color: #0b1116 !important; /* Paksa Hitam */
+    color: #cceeff !important; /* Teks Biru Es */
+    border: 1px solid #466d85 !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    box-shadow: 0 0 10px #00d9ff !important;
+    outline: none !important;
+}
+
+/* Fix Halaman Profile yang tidak terbaca */
+.bg-white {
+    background-color: rgba(5, 11, 20, 0.9) !important; /* Timpa background putih jadi gelap */
+    color: white !important;
+}
+.text-gray-800, .text-gray-600 {
+    color: #cceeff !important; /* Ubah teks abu-abu jadi terang */
+}
+
+.video-background-wrapper {
+    z-index: 0 !important;
+}

@@ -3,31 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use App\Models\Post;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
-    // Method untuk menampilkan daftar item (Penyelesaian error image_4287c8.png)
     public function index()
     {
-        $itemsByCategory = Item::all()->groupBy('category');
-        return view('items.index', compact('itemsByCategory'));
+        // Ambil semua item
+        $allItems = Item::all();
+
+        // Filter Manual: Item Jadi vs Item Dasar
+        $assembled = $allItems->filter(function ($item) {
+            // Cek apakah kolom components ada isinya (array tidak kosong)
+            return !empty($item->components) && count($item->components) > 0;
+        });
+
+        $base = $allItems->filter(function ($item) {
+            // Item dasar = components kosong ATAU null
+            return empty($item->components) || count($item->components) === 0;
+        });
+
+        // Kirim ke view dalam format Group
+        return view('items.index', [
+            'groupedItems' => [
+                'Assembled Artifacts' => $assembled,
+                'Base Armaments' => $base,
+            ]
+        ]);
     }
 
-    // Method untuk menampilkan detail item (Penyelesaian error image_428eef.png)
     public function show($id)
     {
+        // Cari item, jika gagal 404
         $item = Item::findOrFail($id);
         
-        // Mengambil guide komunitas yang merekomendasikan item ini
-        $communityGuides = Post::where('category', 'item_guide')
-                            ->where('content', 'like', '%' . $item->dname . '%')
-                            ->with('user')
-                            ->latest()
-                            ->take(5)
-                            ->get();
-
-        return view('items.show', compact('item', 'communityGuides'));
+        return view('items.show', compact('item'));
     }
 }

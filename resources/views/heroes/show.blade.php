@@ -69,7 +69,7 @@
                     <div class="col-lg-4 ps-lg-4 text-center text-lg-start pt-3 pt-lg-0">
                         <h6 class="text-ice font-cinzel mb-2 small">ROLES</h6>
                         <div class="d-flex flex-wrap gap-1 mb-3 justify-content-center justify-content-lg-start">
-                            @foreach ($hero->roles as $role)
+                            @foreach ($hero->roles ?? [] as $role)
                                 <span class="badge bg-secondary bg-opacity-25 border border-secondary text-light"
                                     style="font-size: 9px;">{{ $role }}</span>
                             @endforeach
@@ -96,8 +96,22 @@
             </x-ice-card>
         </div>
 
+        @if($hero->lore)
+            <div class="mb-5 fade-in-anim" style="animation-delay: 0.3s;">
+                <x-ice-card :interactive="true">
+                    <h4 class="text-ice mb-3 font-cinzel border-bottom border-secondary border-opacity-25 pb-2">
+                        Hero Lore
+                    </h4>
+                    
+                    <div class="text-light text-center small" style="line-height: 1.8;">
+                        {!! nl2br(e($hero->lore)) !!}
+                    </div>
+                </x-ice-card>
+            </div>
+        @endif
+
         @if ($hero->playstyle)
-            <div class="mb-4 fade-in-anim" style="animation-delay: 0.3s;">
+            <div class="mb-4 fade-in-anim" style="animation-delay: 0.35s;">
                 <x-ice-card :interactive="true">
                     <h4 class="text-warning mb-3 font-cinzel border-bottom border-secondary border-opacity-25 pb-2">
                         STRATEGY</h4>
@@ -205,17 +219,36 @@
 
 
     <x-slot:scripts>
+        <style>
+            /* CSS PENTING UNTUK READ MORE 3 BARIS */
+            .playstyle-text {
+                transition: all 0.3s ease;
+            }
+            
+            /* Kondisi saat text dilipat (Collapsed) */
+            .playstyle-text.collapsed {
+                display: -webkit-box;
+                -webkit-line-clamp: 3; /* BATASI HANYA 3 BARIS */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-height: 4.8em; /* Fallback height (sekitar 3 baris x 1.6 line-height) */
+            }
+        </style>
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const text = document.getElementById('playstyleContent');
                 const btn = document.getElementById('readMoreBtn');
 
                 if (text) {
-                    if (text.scrollHeight > 80) {
-                        text.classList.add('collapsed'); 
-                        btn.classList.remove('d-none');
+                    // Cek tinggi asli teks
+                    // Jika tinggi > 80px (kira-kira lebih dari 3 baris), maka lipat.
+                    if (text.scrollHeight > 80) { 
+                        text.classList.add('collapsed'); // Tambah class pembatas
+                        btn.classList.remove('d-none');  // Munculkan tombol
                     } else {
-                        btn.classList.add('d-none'); 
+                        btn.classList.add('d-none');     // Sembunyikan tombol
                     }
                 }
             });
@@ -223,10 +256,14 @@
             function togglePlaystyle() {
                 const text = document.getElementById('playstyleContent');
                 const btn = document.getElementById('readMoreBtn');
+                
+                // Toggle Logic
                 if (text.classList.contains('collapsed')) {
+                    // BUKA (EXPAND)
                     text.classList.remove('collapsed');
                     btn.innerText = 'SHOW LESS ▲';
                 } else {
+                    // TUTUP (COLLAPSE)
                     text.classList.add('collapsed');
                     btn.innerText = 'READ MORE ▼';
                 }

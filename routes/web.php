@@ -6,6 +6,9 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GameInfoController;
+// use App\Http\Controllers\MetaControllerController;
 use App\Models\Hero;
 
 /*
@@ -14,21 +17,16 @@ use App\Models\Hero;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    $heroes = Hero::inRandomOrder()->limit(12)->get();
-    $topWinrate = Hero::where('pro_pick', '>', 10)->get()
-        ->sortByDesc(fn($hero) => $hero->pro_pick > 0 ? ($hero->pro_win / $hero->pro_pick) : 0)
-        ->take(5);
-    $topPicked = Hero::orderByDesc('pro_pick')->take(5)->get();
-
-    return view('welcome', compact('heroes', 'topWinrate', 'topPicked'));
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Pastikan ini ada agar menu Heroes dan Items berfungsi
 Route::get('/heroes', [HeroController::class, 'index'])->name('heroes.index');
 Route::get('/hero/{id}', [HeroController::class, 'show'])->name('hero.show');
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 Route::get('/items/{id}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/patch/{version}', [GameInfoController::class, 'showPatch'])->name('patch.show');
+Route::get('/match/{match_id}', [GameInfoController::class, 'showMatch'])->name('match.show');
+// Route::get('/meta', [MetaController::class, 'index'])->name('meta.index');
 
 /*
 |--------------------------------------------------------------------------

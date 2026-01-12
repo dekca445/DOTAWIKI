@@ -3,7 +3,7 @@
 
     <div class="position-relative d-flex align-items-center justify-content-center text-center"
         style="height: 100vh; background: #000;">
-        <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden">
+        <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: 0;">
             <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover" style="opacity: 0.6;">
                 <source
                     src="https://cdn.cloudflare.steamstatic.com/apps/dota2/videos/dota_react/homepage/dota_montage_webm.webm"
@@ -37,183 +37,133 @@
     </div>
 
     <div class="container py-5">
-        <div class="row g-5">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <h4 class="frozen-text mb-0" data-text="CURRENT META">CURRENT META</h4>
+            <a href="/meta" class="text-ice small text-decoration-none fw-bold">VIEW FULL META &rarr;</a>
+        </div>
 
-            <div class="col-lg-4">
-                <h4 class="frozen-text mb-4" data-text="LATEST NEWS">LATEST NEWS</h4>
-                <div class="d-flex flex-column gap-3">
-                    <div class="card bg-dark border-secondary p-3">
-                        <span class="badge bg-info w-25 mb-2">UPDATE 7.37</span>
-                        <h6 class="text-white">Crownfall Act IV Released</h6>
-                        <p class="text-secondary small mb-0">New arcana, balance changes, and map adjustments have
-                            arrived.</p>
-                    </div>
-                    <div class="card bg-dark border-secondary p-3">
-                        <span class="badge bg-warning w-25 mb-2">ESPORTS</span>
-                        <h6 class="text-white">The International 2026</h6>
-                        <p class="text-secondary small mb-0">Qualifiers conclude. See which teams made the cut.</p>
-                    </div>
-                </div>
+        <div class="card bg-black border border-secondary p-4 shadow-lg">
+            <div class="row text-secondary small fw-bold mb-3 text-uppercase border-bottom border-secondary pb-2">
+                <div class="col-4">Hero</div>
+                <div class="col-4">Pro Pick Rate</div>
+                <div class="col-4">Win Rate</div>
             </div>
 
-            <div class="col-lg-8">
-                <div class="d-flex justify-content-between align-items-end mb-4">
-                    <h4 class="frozen-text mb-0" data-text="CURRENT META">CURRENT META</h4>
-                    <a href="/meta" class="text-ice small text-decoration-none fw-bold">VIEW FULL META &rarr;</a>
-                </div>
-
-                <div class="card bg-black border border-secondary p-4">
-                    <div class="row text-secondary small fw-bold mb-3 text-uppercase">
-                        <div class="col-4">Hero</div>
-                        <div class="col-4">Pro Pick Rate</div>
-                        <div class="col-4">Win Rate</div>
+            @foreach ($topWinrate as $h)
+                <div class="row align-items-center mb-3 hero-meta-row p-2 rounded">
+                    <div class="col-4 d-flex align-items-center">
+                        <img src="{{ $h->icon_url }}" width="32" class="me-2 rounded shadow-sm">
+                        <span class="text-white fw-bold small">{{ $h->name_localized }}</span>
                     </div>
 
-                    @foreach ($topWinrate as $h)
-                        <div class="row align-items-center mb-3 hero-meta-row p-2 rounded">
-                            <div class="col-4 d-flex align-items-center">
-                                <img src="{{ $h->icon_url }}" width="32" class="me-2 rounded">
-                                <span class="text-white fw-bold small">{{ $h->name_localized }}</span>
-                            </div>
-
-                            <div class="col-4">
-                                <div class="d-flex align-items-center">
-                                    <span class="text-white small me-2" style="width: 40px;">{{ $h->pro_pick }}</span>
-                                    <div class="progress flex-grow-1" style="height: 6px; background: #222;">
-                                        <div class="progress-bar bg-secondary"
-                                            style="width: {{ min($h->pro_pick / 20, 100) }}%"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-4">
-                                @php $wr = $h->pro_pick > 0 ? ($h->pro_win / $h->pro_pick)*100 : 0; @endphp
-                                <div class="d-flex align-items-center">
-                                    <span class="{{ $wr >= 50 ? 'text-success' : 'text-danger' }} small me-2"
-                                        style="width: 40px;">{{ number_format($wr, 1) }}%</span>
-                                    <div class="progress flex-grow-1" style="height: 6px; background: #222;">
-                                        <div class="progress-bar {{ $wr >= 50 ? 'bg-success' : 'bg-danger' }}"
-                                            style="width: {{ $wr }}%"></div>
-                                    </div>
-                                </div>
+                    <div class="col-4">
+                        <div class="d-flex align-items-center">
+                            <span class="text-white small me-2" style="width: 40px;">{{ $h->pro_pick }}</span>
+                            <div class="progress flex-grow-1" style="height: 6px; background: #222;">
+                                <div class="progress-bar bg-secondary"
+                                    style="width: {{ min($h->pro_pick / 20, 100) }}%"></div>
                             </div>
                         </div>
-                    @endforeach
+                    </div>
+
+                    <div class="col-4">
+                        @php $wr = $h->pro_pick > 0 ? ($h->pro_win / $h->pro_pick)*100 : 0; @endphp
+                        <div class="d-flex align-items-center">
+                            <span class="{{ $wr >= 50 ? 'text-success' : 'text-danger' }} small me-2"
+                                style="width: 40px;">{{ number_format($wr, 1) }}%</span>
+                            <div class="progress flex-grow-1" style="height: 6px; background: #222;">
+                                <div class="progress-bar {{ $wr >= 50 ? 'bg-success' : 'bg-danger' }}"
+                                    style="width: {{ $wr }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="container-fluid py-5" style="background: #050b14; border-top: 1px solid var(--ice-border);">
+        <div class="container">
+            <h2 class="text-center frozen-text mb-5" data-text="LATEST NEWS">LATEST NEWS</h2>
+
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-md-6 col-lg-5">
+                    <x-ice-card :interactive="true">
+                        <span class="badge bg-info mb-3">
+                            UPDATE {{ $latestPatch['name'] ?? 'UNKNOWN' }}
+                        </span>
+
+                        <h4 class="text-white font-cinzel mb-3">
+                            Dota Patch {{ $latestPatch['name'] ?? 'Latest' }} Released
+                        </h4>
+
+                        <p class="text-secondary small mb-4">
+                            @if ($latestPatch && isset($latestPatch['date']))
+                                Gameplay update {{ $latestPatch['name'] }} is now live. Released on
+                                {{ date('F j, Y', strtotime($latestPatch['date'])) }}. Check the full changelog for
+                                details.
+                            @else
+                                New gameplay updates are live. Check the latest patch notes for hero balancing details.
+                            @endif
+                        </p>
+
+                        <a href="{{ route('patch.show', ['version' => $latestPatch['name'] ?? '7.37']) }}"
+                            class="text-ice small fw-bold text-decoration-none">
+                            READ PATCH NOTES &rarr;
+                        </a>
+                    </x-ice-card>
+                </div>
+
+                <div class="col-md-6 col-lg-5">
+                    <x-ice-card :interactive="true">
+                        <span class="badge bg-warning text-dark mb-3">ESPORTS RESULT</span>
+
+                        @if ($esportsMatch)
+                            <h4 class="text-white font-cinzel mb-3 text-truncate"
+                                title="{{ $esportsMatch['league_name'] ?? 'Pro Circuit' }}">
+                                {{ $esportsMatch['league_name'] ?? 'Professional Match' }}
+                            </h4>
+
+                            <p class="text-secondary small mb-4">
+                                <span
+                                    class="{{ $esportsMatch['radiant_win'] ? 'text-success fw-bold' : 'text-danger' }}">
+                                    {{ $esportsMatch['radiant_name'] ?? 'Radiant' }}
+                                </span>
+                                <span class="mx-2 text-white">VS</span>
+                                <span
+                                    class="{{ !$esportsMatch['radiant_win'] ? 'text-success fw-bold' : 'text-danger' }}">
+                                    {{ $esportsMatch['dire_name'] ?? 'Dire' }}
+                                </span>
+                                <br>
+                                <span class="d-block mt-2 text-white-50">
+                                    Winner: <strong
+                                        class="text-warning">{{ $esportsMatch['radiant_win'] ? $esportsMatch['radiant_name'] ?? 'Radiant' : $esportsMatch['dire_name'] ?? 'Dire' }}</strong>
+                                </span>
+                            </p>
+
+                            <a href="{{ route('match.show', ['match_id' => $esportsMatch['match_id']]) }}"
+                                class="text-ice small fw-bold text-decoration-none">
+                                VIEW MATCH DETAILS &rarr;
+                            </a>
+                        @else
+                            <h4 class="text-white font-cinzel mb-3">Professional Circuit</h4>
+                            <p class="text-secondary small mb-4">
+                                No live match data available at the moment. Check back later for tournament updates.
+                            </p>
+                            <a href="#" class="text-muted small fw-bold text-decoration-none">VIEW BRACKETS
+                                &rarr;</a>
+                        @endif
+                    </x-ice-card>
                 </div>
             </div>
-
         </div>
     </div>
 
     <style>
         .hero-meta-row:hover {
             background: rgba(255, 255, 255, 0.05);
+            transition: background 0.2s;
         }
     </style>
-
-    <div class="container-fluid py-5" style="background: #050b14; border-top: 1px solid var(--ice-border);">
-        <div class="container">
-            <h2 class="text-center frozen-text mb-4" data-text="TACTICAL MAP">TACTICAL MAP</h2>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="bg-dark p-3 rounded border border-secondary h-100">
-                        <input type="text" id="mapSearch"
-                            class="form-control bg-black text-white border-secondary mb-3 form-control-sm"
-                            placeholder="Search hero...">
-
-                        <div class="d-flex flex-wrap gap-2 justify-content-center overflow-auto"
-                            style="max-height: 450px;" id="heroPool">
-                            @foreach (\App\Models\Hero::orderBy('name_localized')->get() as $hero)
-                                <img src="{{ $hero->icon_url }}"
-                                    class="draggable-hero rounded-circle border border-secondary" width="40"
-                                    height="40" draggable="true" title="{{ $hero->name_localized }}"
-                                    data-name="{{ strtolower($hero->name_localized) }}" style="cursor: grab;">
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-7 order-1 order-lg-2 mb-4 mb-lg-0 position-relative d-flex justify-content-center">
-                    <div id="map-container" class="position-relative shadow-lg border border-info"
-                        style="width: 100%; aspect-ratio: 1/1; max-width: 600px; background: black;">
-                        <img src="https://liquipedia.net/commons/images/thumb/9/90/Minimap_7.33c.png/600px-Minimap_7.33c.png"
-                            class="w-100 h-100 object-fit-cover" style="pointer-events: none;">
-                        <div class="position-absolute top-0 start-0 w-100 h-100" id="drop-zone"></div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 order-3">
-                    <div class="text-white-50 small p-3">
-                        <h6 class="text-ice font-cinzel">INSTRUCTIONS:</h6>
-                        <ul class="ps-3">
-                            <li>Search & Drag hero icons.</li>
-                            <li>Plan ward spots.</li>
-                            <li>(Refresh to reset)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <x-slot:scripts>
-        <script>
-            // JS SEARCH MAP
-            document.getElementById('mapSearch').addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                document.querySelectorAll('.draggable-hero').forEach(img => {
-                    img.style.display = img.dataset.name.includes(term) ? 'block' : 'none';
-                });
-            });
-            const draggables = document.querySelectorAll('.draggable-hero');
-            const dropZone = document.getElementById('drop-zone');
-            let draggedItem = null;
-
-            // 1. Saat mulai drag
-            draggables.forEach(hero => {
-                hero.addEventListener('dragstart', function() {
-                    draggedItem = this;
-                    setTimeout(() => this.style.opacity = '0.5', 0);
-                });
-                hero.addEventListener('dragend', function() {
-                    setTimeout(() => this.style.opacity = '1', 0);
-                    draggedItem = null;
-                });
-            });
-
-            // 2. Saat berada di atas drop zone
-            dropZone.addEventListener('dragover', function(e) {
-                e.preventDefault(); // Wajib agar bisa di-drop
-            });
-
-            // 3. Saat di-drop
-            dropZone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                if (draggedItem) {
-                    // Clone gambar agar list asli tidak hilang
-                    const clone = draggedItem.cloneNode(true);
-
-                    // Hitung posisi relative terhadap kotak map
-                    const rect = dropZone.getBoundingClientRect();
-                    const x = e.clientX - rect.left - 20; // -20 biar pas tengah cursor
-                    const y = e.clientY - rect.top - 20;
-
-                    // Style clone agar nempel di map
-                    clone.style.position = 'absolute';
-                    clone.style.left = x + 'px';
-                    clone.style.top = y + 'px';
-                    clone.style.cursor = 'move';
-                    clone.draggable = false; // Matikan drag bawaan, aktifkan drag custom nanti jika mau
-
-                    // Tambahkan efek klik untuk hapus
-                    clone.addEventListener('click', function() {
-                        this.remove();
-                    });
-
-                    dropZone.appendChild(clone);
-                }
-            });
-        </script>
-    </x-slot>
 </x-layout>
