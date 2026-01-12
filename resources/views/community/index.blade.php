@@ -1,11 +1,8 @@
 @php
-    // KITA AMBIL DATA PATCH & ESPORTS LANGSUNG DI SINI
-    // (Agar tidak perlu mengotak-atik CommunityController temanmu)
     use Illuminate\Support\Facades\File;
     use Illuminate\Support\Facades\Http;
     use Illuminate\Support\Facades\Cache;
 
-    // 1. DATA PATCH
     $latestPatch = null;
     $patchPath = storage_path('app/patch.json');
     if (File::exists($patchPath)) {
@@ -14,8 +11,6 @@
             $latestPatch = end($patches);
         }
     }
-
-    // 2. DATA ESPORTS
     $esportsMatch = Cache::remember('community_esports_match', 300, function () {
         try {
             $response = Http::timeout(2)->get('https://api.opendota.com/api/proMatches');

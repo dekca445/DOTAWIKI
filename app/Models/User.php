@@ -9,11 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-    // Relasi Mengikuti (Orang yang kita follow)
-    // app/Models/User.php
-
+  
 public function followers()
 {
     return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id');

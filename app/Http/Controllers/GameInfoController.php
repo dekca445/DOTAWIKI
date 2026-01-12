@@ -10,10 +10,8 @@ use App\Models\Item;
 
 class GameInfoController extends Controller
 {
-    // 1. HALAMAN PATCH NOTE DETAIL
     public function showPatch($version)
     {
-        // Path ke file JSON
         $path = storage_path('app/patchnotes.json');
         
         if (!File::exists($path)) {
@@ -22,34 +20,23 @@ class GameInfoController extends Controller
 
         $allPatches = json_decode(File::get($path), true);
         
-        // --- LOGIKA PENCARIAN CERDAS (SMART LOOKUP) ---
-        
-        // OPSI 1: Cari persis sesuai request (Contoh: "7.37e")
         $patchData = $allPatches[$version] ?? null;
 
-        // OPSI 2: Cari dengan format Underscore (Contoh: "7.40" -> "7_40")
-        // Ini solusi untuk masalah yang kamu temukan tadi!
         if (!$patchData) {
             $underscoreVersion = str_replace('.', '_', $version);
             $patchData = $allPatches[$underscoreVersion] ?? null;
             
-            // Jika ketemu, update $version agar tampilan di layar pakai format underscore (atau tetap titik, opsional)
             if ($patchData) {
-                // Kita biarkan $version tetap pakai titik untuk judul, tapi datanya sudah ketemu.
             }
         }
 
-        // OPSI 3: Cari versi utama (Contoh: "7.37e" -> "7.37" atau "7_37")
         if (!$patchData) {
-            // Hapus huruf di belakang (7.37e -> 7.37)
             $cleanVersion = preg_replace('/[a-z]/i', '', $version);
             
-            // Cek format titik ("7.37")
             if (isset($allPatches[$cleanVersion])) {
                 $patchData = $allPatches[$cleanVersion];
                 $version = $cleanVersion;
             } 
-            // Cek format underscore ("7_37")
             else {
                 $cleanUnderscore = str_replace('.', '_', $cleanVersion);
                 if (isset($allPatches[$cleanUnderscore])) {
@@ -59,7 +46,6 @@ class GameInfoController extends Controller
             }
         }
 
-        // Jika tetap tidak ketemu, baru tampilkan 404
         if (!$patchData) {
             abort(404, "Patch Note versi '$version' (atau variasinya) tidak ditemukan di database.");
         }
@@ -67,7 +53,6 @@ class GameInfoController extends Controller
         return view('game.patch', compact('patchData', 'version'));
     }
 
-    // 2. HALAMAN MATCH DETAIL (ESPORTS)
     public function showMatch($match_id)
     {
         $response = Http::get("https://api.opendota.com/api/matches/{$match_id}");
@@ -78,7 +63,6 @@ class GameInfoController extends Controller
 
         $match = $response->json();
         
-        // Ambil data hero dari DB lokal untuk icon
         $heroes = Hero::all()->keyBy('hero_id'); 
 
         return view('game.match', compact('match', 'heroes'));

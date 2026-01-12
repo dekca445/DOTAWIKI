@@ -9,10 +9,8 @@ class Comment extends Model
 {
     use HasFactory;
 
-    // Mengizinkan isi komentar, user_id, dan post_id disimpan
     protected $guarded = []; 
 
-    // Relasi agar bisa menampilkan nama pengomentar
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -31,10 +31,6 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-
-    /**
-     * Delete the user's account.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
@@ -55,30 +51,23 @@ class ProfileController extends Controller
     public function updatePhoto(Request $request)
 {
     $request->validate([
-        'avatar' => ['required', 'image', 'max:2048'], // Maks 2MB
+        'avatar' => ['required', 'image', 'max:2048'], 
     ]);
 
     $user = $request->user();
 
-    // Hapus foto lama jika ada
     if ($user->avatar) {
         Storage::delete($user->avatar);
     }
 
-    // Simpan foto baru
     $path = $request->file('avatar')->store('avatars', 'public');
     
-    // Update database (Pastikan tabel users punya kolom 'avatar')
-    // Jika belum punya kolom avatar, jalankan migration dulu atau gunakan kolom lain
     $user->update(['avatar' => $path]);
 
     return Redirect::route('profile.edit')->with('status', 'profile-updated');
 }
-// app/Http/Controllers/DashboardController.php
-
 public function index()
 {
-    // Mengambil postingan milik user yang login beserta jumlah like
     $myPosts = Post::where('user_id', auth()->id())
                    ->withCount('likes')
                    ->latest()

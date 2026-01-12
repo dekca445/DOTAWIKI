@@ -14,8 +14,8 @@ class Post extends Model
         'user_id',
         'content',
         'category',
-        'image', // WAJIB ADA
-        'video', // WAJIB ADA
+        'image',
+        'video',
     ];
 
     public function user() { return $this->belongsTo(User::class); }
